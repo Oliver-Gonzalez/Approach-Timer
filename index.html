@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approach Countdown Timer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* ================= TOP RIGHT HAMBURGER NAVIGATION ================= */
+        .nav-menu-container {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 2000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .hamburger-btn {
+            width: 48px;
+            height: 48px;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.18s ease-in-out;
+        }
+
+        .hamburger-btn:hover {
+            background-color: #f8fafc;
+            border-color: #1976d2;
+            box-shadow: 0 4px 14px rgba(25, 118, 210, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .hamburger-btn span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background-color: #000000;
+            border-radius: 1px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .hamburger-btn:hover span {
+            background-color: #1976d2;
+        }
+
+        .hamburger-btn.open span:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+        .hamburger-btn.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.open span:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 310px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            padding: 16px 14px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+
+        .nav-dropdown.show {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            color: #000000;
+            text-transform: uppercase;
+            padding: 2px 6px 8px;
+            border-bottom: 2px solid #000000;
+            margin-bottom: 4px;
+        }
+
+        .nav-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #64748b;
+            text-transform: uppercase;
+            padding: 6px 6px 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 12px;
+            background-color: #ffffff;
+            color: #000000;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .nav-item:hover {
+            background-color: #f8fafc;
+            border-color: #1976d2;
+            color: #1976d2;
+            transform: translateX(2px);
+        }
+
+        .nav-item-home {
+            border-color: #cbd5e1;
+            background-color: #f8fafc;
+        }
+
+        .nav-item-aux:hover {
+            border-color: #d97706;
+            color: #b45309;
+        }
+
+        .nav-arrow {
+            color: #94a3b8;
+            font-size: 14px;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+
+        .nav-item:hover .nav-arrow {
+            color: #1976d2;
+            transform: translateX(3px);
+        }
+
+        .nav-item-aux:hover .nav-arrow {
+            color: #d97706;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 5px 0;
+        }
+
+        @media print {
+            .nav-menu-container {
+                display: none !important;
+            }
+        }
+
+        /* ================= IPAD-EXPANDED MAIN CONTAINER ================= */
+        .container {
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 860px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Header Banner */
+        .header-banner {
+            text-align: center;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #000000;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .subtitle-badge {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #1976d2;
+            text-transform: uppercase;
+        }
+
+        /* Input Grid */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 650px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .container {
+                padding: 24px 20px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 18px;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            color: #000000;
+            font-size: 22px;
+            font-weight: 700;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        /* Opaque Placeholder Styling */
+        input::placeholder {
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.18);
+        }
+
+        /* Button Stack */
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Green Primary Button */
+        .btn-start {
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: 2px solid #2e7d32;
+        }
+
+        .btn-start:hover {
+            background-color: #1b5e20;
+            border-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.28);
+        }
+
+        .btn-stop {
+            background-color: #d32f2f;
+            color: #ffffff;
+            border: 2px solid #d32f2f;
+        }
+
+        .btn-stop:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(211, 47, 47, 0.22);
+        }
+
+        .btn-clear {
+            width: 100%;
+            background: transparent;
+            border: 2px solid #000000;
+            color: #000000;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-top: 16px;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn-clear:hover {
+            background-color: #f1f3f5;
+        }
+
+        /* Countdown Readout Section */
+        .countdown-card {
+            background-color: #f8fafc;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            padding: 30px 24px;
+            margin-top: 26px;
+            text-align: center;
+            display: none;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1.5px solid #000000;
+        }
+
+        .badge-faf {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-color: #0284c7;
+        }
+
+        .badge-map {
+            background-color: #ffedd5;
+            color: #c2410c;
+            border-color: #ea580c;
+        }
+
+        .badge-complete {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-color: #16a34a;
+        }
+
+        .badge-stopped {
+            background-color: #f1f5f9;
+            color: #475569;
+            border-color: #64748b;
+        }
+
+        .results-label {
+            font-size: 13px;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .primary-result {
+            font-size: 80px;
+            font-weight: 800;
+            margin: 6px 0 20px 0;
+            letter-spacing: -2px;
+            line-height: 1;
+            color: #000000;
+        }
+
+        @media (max-width: 600px) {
+            .primary-result {
+                font-size: 60px;
+            }
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            border-top: 2px solid #000000;
+            padding-top: 22px;
+        }
+
+        @media (max-width: 600px) {
+            .stat-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .stat-box {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: #b91c1c;
+            background-color: #fef2f2;
+            border: 2px solid #b91c1c;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 24px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= TOP RIGHT HAMBURGER NAVIGATION ================= -->
+<nav class="nav-menu-container">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Portal Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="nav-dropdown" id="navDropdown">
+        <div class="nav-dropdown-title">UCT TOOLKIT PORTAL</div>
+        
+        <!-- Homepage Link -->
+        <a href="https://uct-toolkit.pages.dev/" class="nav-item nav-item-home">
+            <span>Home (UCT Toolkit)</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">BOLDFACE &amp; OPS-LIMITS</div>
+        
+        <!-- T-6A -->
+        <a href="https://t-6a-boldface.pages.dev/" class="nav-item">
+            <span>T-6A BOLDFACE &amp; OPS-LIMITS</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+
+        <!-- T-1A -->
+        <a href="https://t-1a-boldface.pages.dev/" class="nav-item">
+            <span>T-1A BOLDFACE &amp; OPS-LIMITS</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+
+        <!-- T-38C -->
+        <a href="https://t-38-boldface.pages.dev/" class="nav-item">
+            <span>T-38C BOLDFACE &amp; OPS-LIMITS (IFF)</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">AUX TOOLS</div>
+        
+        <!-- MCSTS Playtime Calculator -->
+        <a href="https://mcsts-playtime-calculator.pages.dev/" class="nav-item nav-item-aux">
+            <span>MCSTS PLAYTIME CALCULATOR</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Header Banner -->
+    <header class="header-banner">
+        <h1>APPROACH COUNTDOWN TIMER</h1>
+        <span class="subtitle-badge">Final Approach Fix to Missed Approach Timing</span>
+    </header>
+
+    <form id="approachForm" onsubmit="return false;">
+        <div class="input-grid">
+            <div class="form-group">
+                <label for="speed">Speed (KIAS)</label>
+                <input type="number" id="speed" min="1" step="1" placeholder="Ex: 120" autocomplete="off" inputmode="numeric">
+            </div>
+            <div class="form-group">
+                <label for="fafDist">Dist to FAF (NM)</label>
+                <input type="number" id="fafDist" min="0" step="0.1" placeholder="Ex: 5.0" autocomplete="off" inputmode="decimal">
+            </div>
+            <div class="form-group">
+                <label for="mapDist">FAF &rarr; MAP Dist (NM)</label>
+                <input type="number" id="mapDist" min="0" step="0.1" placeholder="Ex: 5.5" autocomplete="off" inputmode="decimal">
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button type="button" class="btn-action btn-start" id="btnStart" onclick="startCountdown()">Start Countdown</button>
+            <button type="button" class="btn-action btn-stop" id="btnStop" onclick="stopCountdown()">Stop Countdown</button>
+        </div>
+    </form>
+
+    <div class="error-message" id="errorDiv"></div>
+
+    <!-- Active Real-Time Countdown Readout Area -->
+    <div class="countdown-card" id="countdownCard">
+        <div class="phase-badge badge-faf" id="phaseBadge">LEG 1: INBOUND TO FAF</div>
+        
+        <span class="results-label" id="readoutLabel">Remaining Distance</span>
+        <div class="primary-result" id="primaryDistance">0.0 NM</div>
+
+        <div class="stat-grid">
+            <div class="stat-box">
+                <span class="stat-label" id="timerLabel">Est. Time to FAF</span>
+                <div class="stat-value" id="outEstTime">00:00</div>
+            </div>
+            <div class="stat-box">
+                <!-- Changed from GroundSpeed to Speed -->
+                <span class="stat-label">Speed</span>
+                <div class="stat-value" id="outSpeed">-- KIAS</div>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Rate of Closure</span>
+                <div class="stat-value" id="outRate">-- s / 0.1 NM</div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn-clear" onclick="resetForm()">Reset All Parameters</button>
+
+    <footer class="footer">
+        UCT STUDY &amp; MISSION PLANNING SUITE
+    </footer>
+</div>
+
+<script>
+    /* ================= TOP-RIGHT HAMBURGER TOGGLE ================= */
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navDropdown = document.getElementById('navDropdown');
+
+    hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = navDropdown.classList.contains('show');
+        if (isOpen) {
+            closeNavMenu();
+        } else {
+            openNavMenu();
+        }
+    });
+
+    function openNavMenu() {
+        navDropdown.classList.add('show');
+        hamburgerBtn.classList.add('open');
+    }
+
+    function closeNavMenu() {
+        navDropdown.classList.remove('show');
+        hamburgerBtn.classList.remove('open');
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!navDropdown.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            closeNavMenu();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeNavMenu();
+        }
+    });
+
+    /* ================= COUNTDOWN ENGINE ================= */
+    let timerInterval = null;
+    let isRunning = false;
+
+    let activeSpeed = 0;
+    let initialFafDist = 0;
+    let initialMapDist = 0;
+
+    let totalNmCovered = 0;
+    let lastTimestamp = null;
+
+    function formatTimeRemaining(secondsTotal) {
+        if (secondsTotal <= 0) return "00:00";
+        const mins = Math.floor(secondsTotal / 60);
+        const secs = Math.floor(secondsTotal % 60);
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function startCountdown() {
+        const errorDiv = document.getElementById('errorDiv');
+        const countdownCard = document.getElementById('countdownCard');
+        const btnStart = document.getElementById('btnStart');
+        errorDiv.style.display = 'none';
+
+        const speedRaw = document.getElementById('speed').value;
+        const fafRaw = document.getElementById('fafDist').value;
+        const mapRaw = document.getElementById('mapDist').value;
+
+        if (!speedRaw || !fafRaw || !mapRaw) {
+            showError("Please enter values for Speed, Dist to FAF, and FAF → MAP Dist.");
+            return;
+        }
+
+        const speedVal = parseFloat(speedRaw);
+        const fafVal = parseFloat(fafRaw);
+        const mapVal = parseFloat(mapRaw);
+
+        if (isNaN(speedVal) || isNaN(fafVal) || isNaN(mapVal)) {
+            showError("Please enter valid positive numbers for all fields.");
+            return;
+        }
+
+        if (speedVal <= 0) {
+            showError("Speed must be greater than 0 KIAS.");
+            return;
+        }
+
+        if (fafVal < 0 || mapVal < 0) {
+            showError("Distances cannot be negative.");
+            return;
+        }
+
+        if (!isRunning) {
+            activeSpeed = speedVal;
+            initialFafDist = fafVal;
+            initialMapDist = mapVal;
+
+            countdownCard.style.display = 'block';
+            lastTimestamp = Date.now();
+            isRunning = true;
+
+            const secPerTenth = 360 / activeSpeed;
+            document.getElementById('outRate').textContent = `${secPerTenth.toFixed(1)} s / 0.1 NM`;
+            document.getElementById('outSpeed').textContent = `${Math.round(activeSpeed)} KIAS`;
+            
+            // Keeps button green and updates label to "Running"
+            btnStart.textContent = "Running";
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateCountdown, 100);
+            updateCountdown();
+        }
+    }
+
+    function updateCountdown() {
+        if (!isRunning) return;
+
+        const now = Date.now();
+        const deltaSec = (now - lastTimestamp) / 1000;
+        lastTimestamp = now;
+
+        totalNmCovered += (activeSpeed / 3600) * deltaSec;
+
+        const totalApproachDist = initialFafDist + initialMapDist;
+        const phaseBadge = document.getElementById('phaseBadge');
+        const primaryDist = document.getElementById('primaryDistance');
+        const timerLabel = document.getElementById('timerLabel');
+        const outEstTime = document.getElementById('outEstTime');
+
+        if (totalNmCovered < initialFafDist) {
+            // LEG 1: Inbound to FAF
+            const distRemainingFaf = Math.max(0, initialFafDist - totalNmCovered);
+            const timeToFafSec = (distRemainingFaf / activeSpeed) * 3600;
+
+            phaseBadge.className = "phase-badge badge-faf";
+            phaseBadge.textContent = "LEG 1: INBOUND TO FAF";
+            primaryDist.textContent = `${distRemainingFaf.toFixed(1)} NM`;
+            timerLabel.textContent = "Est. Time to FAF";
+            outEstTime.textContent = formatTimeRemaining(timeToFafSec);
+
+        } else if (totalNmCovered < totalApproachDist) {
+            // LEG 2: Inbound from FAF to MAP
+            const distFromFaf = totalNmCovered - initialFafDist;
+            const distRemainingMap = Math.max(0, initialMapDist - distFromFaf);
+            const timeToMapSec = (distRemainingMap / activeSpeed) * 3600;
+
+            phaseBadge.className = "phase-badge badge-map";
+            phaseBadge.textContent = "LEG 2: FINAL APPROACH (FAF \u2192 MAP)";
+            primaryDist.textContent = `${distRemainingMap.toFixed(1)} NM`;
+            timerLabel.textContent = "Est. Time to MAP";
+            outEstTime.textContent = formatTimeRemaining(timeToMapSec);
+
+        } else {
+            // Complete
+            phaseBadge.className = "phase-badge badge-complete";
+            phaseBadge.textContent = "\u2705 APPROACH COMPLETE / MAP REACHED";
+            primaryDist.textContent = "0.0 NM";
+            timerLabel.textContent = "Target MAP Status";
+            outEstTime.textContent = "00:00";
+
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('btnStart').textContent = "Start Countdown";
+        }
+    }
+
+    function stopCountdown() {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            const phaseBadge = document.getElementById('phaseBadge');
+            phaseBadge.className = "phase-badge badge-stopped";
+            phaseBadge.textContent = "\u23F8 COUNTDOWN STOPPED";
+            document.getElementById('btnStart').textContent = "Resume Countdown";
+        }
+    }
+
+    function showError(msg) {
+        const errorDiv = document.getElementById('errorDiv');
+        errorDiv.textContent = msg;
+        errorDiv.style.display = 'block';
+    }
+
+    function resetForm() {
+        if (timerInterval) clearInterval(timerInterval);
+        isRunning = false;
+        totalNmCovered = 0;
+        lastTimestamp = null;
+
+        document.getElementById('speed').value = "";
+        document.getElementById('fafDist').value = "";
+        document.getElementById('mapDist').value = "";
+
+        document.getElementById('errorDiv').style.display = 'none';
+        document.getElementById('countdownCard').style.display = 'none';
+        document.getElementById('btnStart').textContent = "Start Countdown";
+    }
+</script>
+
+</body>
+</html>
