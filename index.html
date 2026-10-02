@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approach Countdown Timer</title>
+    <title>Instrument Approach Timer</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,22 +20,23 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: clamp(16px, 3vw, 40px) clamp(10px, 2vw, 20px);
             position: relative;
         }
 
         /* ================= TOP RIGHT HAMBURGER NAVIGATION ================= */
         .nav-menu-container {
             position: fixed;
-            top: 20px;
-            right: 24px;
+            top: clamp(12px, 2vw, 20px);
+            right: clamp(12px, 2vw, 24px);
             z-index: 2000;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* Responsive Hamburger Button */
         .hamburger-btn {
-            width: 48px;
-            height: 48px;
+            width: clamp(40px, 5vw, 48px);
+            height: clamp(40px, 5vw, 48px);
             background-color: #ffffff;
             border: 2px solid #000000;
             border-radius: 8px;
@@ -44,7 +45,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             padding: 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             transition: all 0.18s ease-in-out;
@@ -59,7 +60,7 @@
 
         .hamburger-btn span {
             display: block;
-            width: 24px;
+            width: clamp(20px, 2.5vw, 24px);
             height: 2.5px;
             background-color: #000000;
             border-radius: 1px;
@@ -70,21 +71,23 @@
             background-color: #1976d2;
         }
 
+        /* Transform to 'X' when open */
         .hamburger-btn.open span:nth-child(1) {
-            transform: translateY(8.5px) rotate(45deg);
+            transform: translateY(7.5px) rotate(45deg);
         }
         .hamburger-btn.open span:nth-child(2) {
             opacity: 0;
         }
         .hamburger-btn.open span:nth-child(3) {
-            transform: translateY(-8.5px) rotate(-45deg);
+            transform: translateY(-7.5px) rotate(-45deg);
         }
 
+        /* Dropdown Card */
         .nav-dropdown {
             position: absolute;
-            top: calc(100% + 10px);
+            top: calc(100% + 8px);
             right: 0;
-            width: 310px;
+            width: min(310px, 86vw);
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 10px;
@@ -116,7 +119,7 @@
         }
 
         .nav-section-label {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             letter-spacing: 1px;
             color: #64748b;
@@ -128,11 +131,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 11px 12px;
+            padding: 10px 12px;
             background-color: #ffffff;
             color: #000000;
             text-decoration: none;
-            font-size: 12.5px;
+            font-size: clamp(11.5px, 1.4vw, 12.5px);
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -185,15 +188,16 @@
             }
         }
 
-        /* ================= IPAD-EXPANDED MAIN CONTAINER ================= */
+        /* ================= DYNAMIC FLUID CONTAINER ================= */
         .container {
             background-color: #ffffff;
             border: 2px solid #000000;
             border-radius: 16px;
-            padding: 40px 36px;
+            padding: clamp(24px, 4vw, 40px) clamp(18px, 3.5vw, 36px);
             width: 100%;
-            max-width: 860px;
+            max-width: min(860px, 100%);
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+            margin: 0 auto;
         }
 
         /* Header Banner */
@@ -201,11 +205,11 @@
             text-align: center;
             padding-bottom: 16px;
             border-bottom: 2px solid #000000;
-            margin-bottom: 30px;
+            margin-bottom: clamp(20px, 3vw, 30px);
         }
 
         h1 {
-            font-size: 32px;
+            font-size: clamp(24px, 3.6vw, 32px);
             font-weight: 800;
             letter-spacing: 1.5px;
             color: #000000;
@@ -214,31 +218,25 @@
         }
 
         .subtitle-badge {
-            font-size: 13px;
+            font-size: clamp(11.5px, 1.4vw, 13px);
             font-weight: 700;
             letter-spacing: 1.5px;
             color: #1976d2;
             text-transform: uppercase;
         }
 
-        /* Input Grid */
+        /* Responsive Input Grid */
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 22px;
+            gap: clamp(14px, 2.2vw, 20px);
+            margin-bottom: clamp(14px, 2.2vw, 22px);
         }
 
         @media (max-width: 650px) {
             .input-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .container {
-                padding: 24px 20px;
-            }
-            h1 {
-                font-size: 26px;
+                gap: 14px;
             }
         }
 
@@ -248,7 +246,7 @@
         }
 
         label {
-            font-size: 13px;
+            font-size: clamp(12px, 1.4vw, 13px);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
@@ -258,12 +256,12 @@
 
         input[type="number"] {
             width: 100%;
-            padding: 14px 18px;
+            padding: clamp(10px, 1.6vw, 14px) clamp(12px, 1.8vw, 18px);
             background-color: #ffffff;
             border: 2px solid #000000;
             border-radius: 8px;
             color: #000000;
-            font-size: 22px;
+            font-size: clamp(18px, 2.4vw, 22px);
             font-weight: 700;
             transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
@@ -272,7 +270,7 @@
         input::placeholder {
             color: #9ca3af;
             font-weight: 500;
-            font-size: 18px;
+            font-size: clamp(15px, 2vw, 18px);
         }
 
         input[type="number"]:focus {
@@ -285,15 +283,21 @@
         .button-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: clamp(12px, 2vw, 16px);
             margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .button-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         .btn-action {
             width: 100%;
-            padding: 16px 20px;
+            padding: clamp(13px, 1.8vw, 16px) 20px;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: clamp(13.5px, 1.6vw, 15px);
             font-weight: 700;
             letter-spacing: 0.8px;
             text-transform: uppercase;
@@ -337,10 +341,10 @@
             background: transparent;
             border: 2px solid #000000;
             color: #000000;
-            padding: 14px 20px;
+            padding: clamp(11px, 1.5vw, 14px) 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13.5px;
+            font-size: clamp(12px, 1.4vw, 13.5px);
             font-weight: 700;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -357,15 +361,15 @@
             background-color: #f8fafc;
             border: 2px solid #000000;
             border-radius: 12px;
-            padding: 30px 24px;
-            margin-top: 26px;
+            padding: clamp(22px, 3.5vw, 30px) clamp(16px, 2.5vw, 24px);
+            margin-top: clamp(20px, 3vw, 26px);
             text-align: center;
             display: none;
         }
 
         .phase-badge {
             display: inline-block;
-            font-size: 13px;
+            font-size: clamp(11.5px, 1.4vw, 13px);
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -400,7 +404,7 @@
         }
 
         .results-label {
-            font-size: 13px;
+            font-size: clamp(11.5px, 1.4vw, 13px);
             color: #4b5563;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -408,27 +412,22 @@
             display: block;
         }
 
+        /* Large Glancable Primary Readout */
         .primary-result {
-            font-size: 80px;
+            font-size: clamp(54px, 9vw, 80px);
             font-weight: 800;
-            margin: 6px 0 20px 0;
+            margin: 6px 0 clamp(14px, 2vw, 20px) 0;
             letter-spacing: -2px;
             line-height: 1;
             color: #000000;
         }
 
-        @media (max-width: 600px) {
-            .primary-result {
-                font-size: 60px;
-            }
-        }
-
         .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
+            gap: clamp(10px, 1.8vw, 16px);
             border-top: 2px solid #000000;
-            padding-top: 22px;
+            padding-top: clamp(16px, 2.2vw, 22px);
         }
 
         @media (max-width: 600px) {
@@ -442,12 +441,12 @@
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 8px;
-            padding: 14px 16px;
+            padding: clamp(10px, 1.5vw, 14px) clamp(10px, 1.8vw, 16px);
             text-align: center;
         }
 
         .stat-label {
-            font-size: 11.5px;
+            font-size: clamp(10px, 1.2vw, 11.5px);
             font-weight: 700;
             letter-spacing: 0.6px;
             color: #64748b;
@@ -457,7 +456,7 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: clamp(18px, 2.5vw, 24px);
             font-weight: 800;
             color: #000000;
         }
@@ -469,7 +468,7 @@
             border: 2px solid #b91c1c;
             padding: 14px 18px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: clamp(12.5px, 1.5vw, 14px);
             font-weight: 700;
             text-align: center;
             margin-top: 20px;
@@ -479,11 +478,11 @@
         /* Footer */
         .footer {
             text-align: center;
-            font-size: 12px;
+            font-size: clamp(10.5px, 1.3vw, 12px);
             color: #64748b;
             font-weight: 700;
             letter-spacing: 1px;
-            margin-top: 24px;
+            margin-top: clamp(18px, 2.5vw, 24px);
             text-transform: uppercase;
         }
     </style>
@@ -535,6 +534,14 @@
             <span>MCSTS PLAYTIME CALCULATOR</span>
             <span class="nav-arrow">&rarr;</span>
         </a>
+
+        <!-- TF Bomb-Run Calculator -->
+        <a href="https://tf-bomb-run-calc.pages.dev/" class="nav-item nav-item-aux">
+            <span>TF BOMB-RUN CALCULATOR</span>
+            <span class="nav-arrow">&rarr;</span>
+        </a>
+
+        <!-- (Instrument Approach Timer omitted since user is on this tool) -->
     </div>
 </nav>
 
@@ -582,7 +589,6 @@
                 <div class="stat-value" id="outEstTime">00:00</div>
             </div>
             <div class="stat-box">
-                <!-- Changed from GroundSpeed to Speed -->
                 <span class="stat-label">Speed</span>
                 <div class="stat-value" id="outSpeed">-- KIAS</div>
             </div>
